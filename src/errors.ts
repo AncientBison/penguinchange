@@ -1,0 +1,1 @@
+export const spriteNotInitializedError = Error("Method run with unloaded sprite, run loadSprite before initialization");
