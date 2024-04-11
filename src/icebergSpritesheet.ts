@@ -42,8 +42,18 @@ const data = {
             sourceSize: { w: 16, h: 16 },
             spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
         },
+        iceBottomLeft2: {
+            frame: { x: 16, y: 48, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
+        },
         iceBottom: {
             frame: { x: 32, y: 32, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
+        },
+        iceBottom2: {
+            frame: { x: 32, y: 48, w: 16, h: 16 },
             sourceSize: { w: 16, h: 16 },
             spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
         },
@@ -52,44 +62,74 @@ const data = {
             sourceSize: { w: 16, h: 16 },
             spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
         },
+        iceBottomRight2: {
+            frame: { x: 48, y: 48, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
+        },
         ice4Open: {
-            "frame": { "x": 0, "y": 48, "w": 16, "h": 16 },
-            "sourceSize": { "w": 16, "h": 16 },
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 }
+            frame: { x: 0, y: 64, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
+        },
+        ice4Open2: {
+            frame: { x: 0, y: 80, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
         },
         ice2OpenHorizontal: {
-            "frame": { "x": 16, "y": 48, "w": 16, "h": 16 },
-            "sourceSize": { "w": 16, "h": 16 },
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 }
+            frame: { x: 16, y: 64, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
+        },
+        ice2OpenHorizontal2: {
+            frame: { x: 16, y: 80, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
         },
         ice2OpenVertical: {
-            "frame": { "x": 32, "y": 48, "w": 16, "h": 16 },
-            "sourceSize": { "w": 16, "h": 16 },
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 }
+            frame: { x: 32, y: 64, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
         },
         ice3OpenTop: {
-            "frame": { "x": 48, "y": 48, "w": 16, "h": 16 },
-            "sourceSize": { "w": 16, "h": 16 },
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 }
+            frame: { x: 48, y: 64, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
+        },
+        ice3OpenTop2: {
+            frame: { x: 48, y: 80, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
         },
         ice3OpenLeft: {
-            "frame": { "x": 64, "y": 48, "w": 16, "h": 16 },
-            "sourceSize": { "w": 16, "h": 16 },
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 }
+            frame: { x: 64, y: 64, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
+        },
+        ice3OpenLeft2: {
+            frame: { x: 64, y: 80, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
         },
         ice3OpenRight: {
-            "frame": { "x": 80, "y": 48, "w": 16, "h": 16 },
-            "sourceSize": { "w": 16, "h": 16 },
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 }
+            frame: { x: 80, y: 64, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
+        },
+        ice3OpenRight2: {
+            frame: { x: 80, y: 80, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
         },
         ice3OpenBottom: {
-            "frame": { "x": 96, "y": 48, "w": 16, "h": 16 },
-            "sourceSize": { "w": 16, "h": 16 },
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 }
+            frame: { x: 96, y: 64, w: 16, h: 16 },
+            sourceSize: { w: 16, h: 16 },
+            spriteSourceSize: { x: 0, y: 0, w: 16, h: 16 }
         }
     },
     meta: {
-        image: 'iceberg.png',
+        image: 'icebergtiles.png',
         format: 'RGBA8888',
         size: { w: 128, h: 128 },
         scale: 1

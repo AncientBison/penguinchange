@@ -39,7 +39,9 @@ await hoverSprite.loadSprite(160);
 hoverSprite.addToContainer(app.stage);
 const icebergTilemap = new OverlayTilemap(waterTilemap, undefined, false);
 
-const powerPlantTilemap = new OverlayTilemap(icebergTilemap, hoverSprite);
+const icebergBottomTilemap = new OverlayTilemap(icebergTilemap, undefined);
+
+const powerPlantTilemap = new OverlayTilemap(icebergBottomTilemap, hoverSprite);
 
 const icebergTextures = await getIcebergTextures();
 const penguinAnimations = await getPenguinAnimations();
@@ -48,19 +50,45 @@ const powerplantAnimations = await getPowerPlantAnimations();
 for (let x = 0; x < TILEMAP_COLS; x++) {
     for (let y = 0; y < TILEMAP_ROWS; y++) {
         waterTilemap.createTile(y, x, icebergTextures.textures.water, [], false);
+        icebergBottomTilemap.createTile(y, x, icebergTextures.textures.water, [], false);
     }
 }
+
+// open sides: top left right bottom
+const iceTextureMap: Map<number, Texture[]> = new Map([
+    // 1 open
+    [0b1000, [icebergTextures.textures.iceTop]],
+    [0b0100, [icebergTextures.textures.iceLeft]],
+    [0b0010, [icebergTextures.textures.iceRight]],
+    [0b0001, [icebergTextures.textures.iceBottom, icebergTextures.textures.iceBottom2]],
+    // 2 open
+    [0b1100, [icebergTextures.textures.iceTopLeft]],
+    [0b1010, [icebergTextures.textures.iceTopRight]],
+    [0b1001, [icebergTextures.textures.ice2OpenHorizontal, icebergTextures.textures.ice2OpenHorizontal2]],
+    [0b0110, [icebergTextures.textures.ice2OpenVertical]],
+    [0b0101, [icebergTextures.textures.iceBottomLeft, icebergTextures.textures.iceBottomLeft2]],
+    [0b0011, [icebergTextures.textures.iceBottomRight, icebergTextures.textures.iceBottomRight2]],
+    // 3 open
+    [0b0111, [icebergTextures.textures.ice3OpenTop, icebergTextures.textures.ice3OpenTop2]],
+    [0b1011, [icebergTextures.textures.ice3OpenLeft, icebergTextures.textures.ice3OpenLeft2]],
+    [0b1101, [icebergTextures.textures.ice3OpenRight, icebergTextures.textures.ice3OpenRight2]],
+    [0b1110, [icebergTextures.textures.ice3OpenBottom]],
+    // 4 open
+    [0b1111, [icebergTextures.textures.ice4Open, icebergTextures.textures.ice4Open2]]
+]);
 
 const defaultCoalPowerPlants = [new Point(7, 3)];
 
 for (let x = ICEBERG_PADDING; x < TILEMAP_COLS - ICEBERG_PADDING; x++) {
     for (let y = ICEBERG_PADDING; y < TILEMAP_ROWS - ICEBERG_PADDING; y++) {
-        icebergTilemap.createTile(y, x, getIcebergTexture(y, x), getIcebergFlags(y), false);
+        icebergTilemap.createTile(y, x, getIcebergTexture(y, x), [], false);
+
+        retextureIcebergTile(y, x, true);
 
         if (defaultCoalPowerPlants.some(point => point.x === x && point.y === y)) {
             powerPlantTilemap.createTile(y, x, powerplantAnimations["coal"][0], [ TileFlag.BLOCKING ], true);
         } else {
-            powerPlantTilemap.createTile(y, x, Texture.EMPTY, getIcebergFlags(y), true);
+            powerPlantTilemap.createTile(y, x, Texture.EMPTY, [], true);
         }
     }
 }
@@ -98,20 +126,9 @@ function getIcebergTexture(row: number, col: number) {
     return icebergTextures.textures.iceRight;
 }
 
-function getIcebergFlags(row: number) {
-    const isBottom = row == TILEMAP_ROWS - (ICEBERG_PADDING * 2);
-
-    if (isBottom) {
-        console.log(row)
-        return [TileFlag.BLOCKING]
-    }
-
-    return [];
-}
-
 const stage = new Stage(app);
 
-const numberOfPenguins = 1;
+const numberOfPenguins = 100;
 
 for (let i = 0; i < numberOfPenguins; i++) {
     stage.addBody(new Penguin(new Point((Math.random() * ((TILEMAP_COLS - 2) - 1 * ICEBERG_PADDING) + 2) * TILE_SIZE, (Math.random() * ((TILEMAP_ROWS - 2) - 2 * ICEBERG_PADDING) + 2) * TILE_SIZE), penguinAnimations, powerPlantTilemap));
@@ -136,6 +153,10 @@ stage.gameTicker = (ticker) => {
             icebergTilemap.removeTileAtPosition(brokenIcebergTile.row, brokenIcebergTile.col);
             powerPlantTilemap.removeTileAtPosition(brokenIcebergTile.row, brokenIcebergTile.col);
 
+            if (!icebergTileExists(brokenIcebergTile.row + 1, brokenIcebergTile.col)) {
+                icebergBottomTilemap.retextureTile(brokenIcebergTile.row + 1, brokenIcebergTile.col, icebergTextures.textures.water);
+            }
+
             const offsets = [
                 { row: -1, col: 0 }, // Top
                 { row: 0, col: 1 },  // Right
@@ -148,39 +169,40 @@ stage.gameTicker = (ticker) => {
                 const adjacentCol = brokenIcebergTile.col + offset.col;
     
                 if (icebergTileExists(adjacentRow, adjacentCol)) {
-                    const topOpen = !icebergTileExists(adjacentRow - 1, adjacentCol);
-                    const leftOpen = !icebergTileExists(adjacentRow, adjacentCol - 1);
-                    const rightOpen = !icebergTileExists(adjacentRow, adjacentCol + 1);
-                    const bottomOpen = !icebergTileExists(adjacentRow + 1, adjacentCol);
-    
-                    icebergTilemap.retextureTile(adjacentRow, adjacentCol, iceTextureMap.get(boolsToNumber(topOpen, leftOpen, rightOpen, bottomOpen)) ?? icebergTextures.textures.iceMiddle);
+                    retextureIcebergTile(adjacentRow, adjacentCol);
                 }
             }
         }
     }
 };
 
-const iceTextureMap: Map<number, Texture> = new Map([
-    // 1 open
-    [0b1000, icebergTextures.textures.iceTop],
-    [0b0100, icebergTextures.textures.iceLeft],
-    [0b0010, icebergTextures.textures.iceRight],
-    [0b0001, icebergTextures.textures.iceBottom],
-    // 2 open
-    [0b1100, icebergTextures.textures.iceTopLeft],
-    [0b1010, icebergTextures.textures.iceTopRight],
-    [0b1001, icebergTextures.textures.ice2OpenVertical],
-    [0b0110, icebergTextures.textures.ice2OpenHorizontal],
-    [0b0101, icebergTextures.textures.iceBottomLeft],
-    [0b0011, icebergTextures.textures.iceBottomRight],
-    // 3 open
-    [0b0111, icebergTextures.textures.ice3OpenTop],
-    [0b1011, icebergTextures.textures.ice3OpenLeft],
-    [0b1101, icebergTextures.textures.ice3OpenRight],
-    [0b1110, icebergTextures.textures.ice3OpenBottom],
-    // 4 open
-    [0b1111, icebergTextures.textures.ice4Open]
-]);
+function retextureIcebergTile(row: number, col: number, initializing?: boolean) {
+    let textures: Texture[];
+    if (initializing) {
+        const leftOpen = col == ICEBERG_PADDING;
+        const rightOpen = col == TILEMAP_COLS - (ICEBERG_PADDING * 2);
+        const bottomOpen = row == TILEMAP_ROWS - (ICEBERG_PADDING * 2);
+
+        textures = iceTextureMap.get(boolsToNumber(false, leftOpen, rightOpen, bottomOpen)) ?? [];
+    } else {
+        const topOpen = !icebergTileExists(row - 1, col);
+        const leftOpen = !icebergTileExists(row, col - 1);
+        const rightOpen = !icebergTileExists(row, col + 1);
+        const bottomOpen = !icebergTileExists(row + 1, col);
+
+        textures = iceTextureMap.get(boolsToNumber(topOpen, leftOpen, rightOpen, bottomOpen)) ?? [];
+    }
+    
+    
+    if (textures.length > 0) {
+        if (!initializing) {
+            icebergTilemap.retextureTile(row, col, textures[0]);
+        }
+        if (textures.length > 1) {
+            icebergBottomTilemap.retextureTile(row + 1, col, textures[1]);
+        }
+    }
+}
 
 function boolsToNumber(bool1: boolean, bool2: boolean, bool3: boolean, bool4: boolean): number {
     return (Number(bool1) << 3) | (Number(bool2) << 2) | (Number(bool3) << 1) | Number(bool4);

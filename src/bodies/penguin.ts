@@ -29,7 +29,7 @@ export class Penguin extends Body {
         this.sprite.play();
         this.sprite.height = TILE_SIZE;
         this.sprite.width = TILE_SIZE;
-        this.sprite.anchor.set(1);
+        this.sprite.anchor.set(1, 1.2);
 
         this.sprite.addEventListener("pointerdown", () => {
             this.beingHeld = true;
